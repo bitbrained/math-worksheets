@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simplifying Exponential Expressions</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .problem {
+            margin: 20px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .controls {
+            margin: 20px 0;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Simplifying Exponential Expressions</h1>
+    <div class="controls">
+        <button onclick="generateProblems()">Generate New Problems</button>
+    </div>
+    <div id="problems"></div>
+
+    <script>
+        const expressionTemplates = [
+            'x^{{a}} \\cdot x^{{b}}',
+            '(y^{{a}})^{{b}}',
+            '{{a}}x^{{b}} \\cdot {{b}}x^{{c}}',
+            '({{a}}x^{{b}})({{b}}x^{{c}})',
+            '\\frac{x^{{a}}}{x^{{b}}}',
+            '({{a}}x^{{b}} y)({{b}}x^{{c}} y^{{d}})',
+            '\\frac{x^{{b}}y^{{c}}}{{{a}}x^{{d}}}',
+            '({{a}}x^{{b}}y^{{c}})^{{d}}',
+            '\\left(\\frac{y^{{a}}}{x^{{b}}}\\right)^{{c}}',
+            '({{a}}x^{{b}}y)({{c}}x^{{d}}y^{{e}})',
+            '\\frac{{{a}}x^{{b}}y^{{c}}}{{{a}}y^{{d}}}',
+        ];
+
+        function getRandomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        function getRandomCoefficient() {
+            const coefficients = [2, 3, 4, 5];
+            return coefficients[Math.floor(Math.random() * coefficients.length)];
+        }
+
+        function generateExpression() {
+            const template = expressionTemplates[Math.floor(Math.random() * expressionTemplates.length)];
+            const values = {
+                a: getRandomInt(-9, 9),
+                b: getRandomInt(-9, 9),
+                c: getRandomInt(-9, 9),
+                d: getRandomInt(-9, 9),
+                e: getRandomInt(-9, 9)
+            };
+
+            return template.replace(/\{\{([abcde])\}\}/g, (m,p1) => `{${values[p1]}}`);
+        }
+
+        function generateProblems() {
+            const problemsDiv = document.getElementById('problems');
+            problemsDiv.innerHTML = '';
+
+            for (let i = 1; i <= 10; i++) {
+                const problemDiv = document.createElement('div');
+                problemDiv.className = 'problem';
+                const expression = generateExpression();
+                problemDiv.innerHTML = `
+                    <h3>Problem ${i}</h3>
+                    <p>Simplify the following expression:</p>
+                    <p>\\[${expression}\\]</p>
+                `;
+                problemsDiv.appendChild(problemDiv);
+            }
+
+            MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+        }
+
+        generateProblems();
+    </script>
+</body>
+</html>
