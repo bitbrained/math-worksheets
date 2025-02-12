@@ -40,6 +40,14 @@
         <button onclick="generateProblems()">Generate New Problems</button>
     </div>
     <div id="problems"></div>
+    
+    <template id="problem-template">
+        <div class="problem">
+            <h3>Problem</h3>
+            <p>Simplify the following expression:</p>
+            <p class="expression"></p>
+        </div>
+    </template>
 
     <script>
         const expressionTemplates = [
@@ -80,18 +88,20 @@
 
         function generateProblems() {
             const problemsDiv = document.getElementById('problems');
+            const template = document.getElementById('problem-template');
             problemsDiv.innerHTML = '';
 
             for (let i = 1; i <= 10; i++) {
-                const problemDiv = document.createElement('div');
-                problemDiv.className = 'problem';
+                const clone = template.content.cloneNode(true);
                 const expression = generateExpression();
-                problemDiv.innerHTML = `
-                    <h3>Problem ${i}</h3>
-                    <p>Simplify the following expression:</p>
-                    <p>\\[${expression}\\]</p>
-                `;
-                problemsDiv.appendChild(problemDiv);
+                
+                // Update the problem number
+                clone.querySelector('h3').textContent = `Problem ${i}`;
+                
+                // Set the expression using MathJax delimiters
+                clone.querySelector('.expression').textContent = `\\[${expression}\\]`;
+                
+                problemsDiv.appendChild(clone);
             }
 
             MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
