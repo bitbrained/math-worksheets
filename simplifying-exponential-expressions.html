@@ -43,8 +43,7 @@
     
     <template id="problem-template">
         <div class="problem">
-            <h3>Problem</h3>
-            <p>Simplify the following expression:</p>
+            <h3>Problem #</h3>
             <p class="expression"></p>
         </div>
     </template>
@@ -96,7 +95,7 @@
                 const expression = generateExpression();
                 
                 // Update the problem number
-                clone.querySelector('h3').textContent = `Problem ${i}`;
+                clone.querySelector('h3').textContent = `#${i}`;
                 
                 // Set the expression using MathJax delimiters
                 clone.querySelector('.expression').textContent = `\\[${expression}\\]`;
