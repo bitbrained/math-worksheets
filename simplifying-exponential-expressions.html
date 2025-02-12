@@ -11,6 +11,58 @@
         body {
             font-family: 'Inter', sans-serif;
         }
+
+        @media print {
+            /* Hide decorative and interactive elements */
+            .blur-3xl,
+            button {
+                display: none !important;
+            }
+
+            /* Reset background and text colors */
+            body {
+                background: white !important;
+                color: black !important;
+            }
+
+            /* Optimize layout for paper */
+            .mx-auto {
+                margin: 0 !important;
+                max-width: none !important;
+            }
+
+            /* Adjust problem grid */
+            #problems {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 2rem !important;
+                page-break-inside: avoid;
+            }
+
+            /* Style individual problems */
+            .problem {
+                break-inside: avoid;
+                border: 1px solid #ccc !important;
+                box-shadow: none !important;
+                background: white !important;
+            }
+
+            /* Reduce top spacing */
+            .py-16 {
+                padding-top: 1rem !important;
+                padding-bottom: 1rem !important;
+            }
+
+            /* Adjust title for print */
+            h1 {
+                font-size: 24px !important;
+                margin-bottom: 1rem !important;
+            }
+
+            /* Remove hover effects */
+            .hover\:bg-gray-50:hover {
+                background-color: white !important;
+            }
+        }
     </style>
 </head>
 <body class="bg-white">
