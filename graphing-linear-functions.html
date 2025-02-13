@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graphing Linear Functions</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        @media print {
+            .decorative,
+            button {
+                display: none !important;
+            }
+
+            body {
+                background: white !important;
+                color: black !important;
+            }
+
+            .mx-auto {
+                margin: 0 !important;
+                max-width: none !important;
+            }
+
+            #problems {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 1rem !important;
+            }
+
+            .problem {
+                break-inside: avoid;
+                border: 1px solid #ccc !important;
+                box-shadow: none !important;
+                background: white !important;
+                padding: .25rem !important;
+            }
+
+            .py-16 {
+                padding-top: 1rem !important;
+                padding-bottom: 1rem !important;
+            }
+
+            h1 {
+                font-size: 18px !important;
+                margin-bottom: 0rem !important;
+            }
+
+            .hover\:bg-gray-50:hover {
+                background-color: white !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-white">
+    <div class="relative isolate">
+        <!-- Background -->
+        <div class="decorative absolute inset-x-0 top-40 -z-10 transform-gpu overflow-hidden blur-3xl" aria-hidden="true">
+            <div class="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]"></div>
+        </div>
+
+        <!-- Header -->
+        <div class="px-6 pt-6 lg:px-8">
+            <nav class="flex items-center justify-between" aria-label="Global">
+                <div class="flex lg:flex-1">
+                    <a href="index.html" class="-m-1.5 p-1.5">
+                        <span class="text-2xl font-bold text-gray-900">Math Worksheets</span>
+                    </a>
+                </div>
+            </nav>
+        </div>
+
+        <main>
+            <!-- Title Section -->
+            <div class="relative px-6 lg:px-8">
+                <div class="mx-auto max-w-2xl py-16 sm:py-24">
+                    <div class="text-center">
+                        <h1 class="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
+                            Graphing Linear Functions
+                        </h1>
+                        <p class="decorative mt-6 text-lg leading-8 text-gray-600">
+                            Practice graphing linear functions by finding key points and identifying slope and y-intercept.
+                        </p>
+                        <div class="decorative mt-8">
+                            <button onclick="generateProblems()" 
+                                    class="rounded-md bg-indigo-600 px-6 py-3 text-base font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                Generate New Problems
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Problems Grid -->
+            <div class="mx-auto max-w-7xl px-6 lg:px-8 pb-24">
+                <div id="problems" class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"></div>
+            </div>
+        </main>
+
+        <!-- Background continued -->
+        <div class="decorative absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]" aria-hidden="true">
+            <div class="relative left-[calc(50%+3rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%+36rem)] sm:w-[72.1875rem]"></div>
+        </div>
+    </div>
+
+    <template id="problem-template">
+        <div class="problem rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-900/5 hover:bg-gray-50 transition-colors">
+            <h3 class="text-base font-semibold leading-7 text-gray-500">Problem #</h3>
+            <p class="expression mt-3 text-lg"></p>
+            <div class="points mt-4 text-sm text-gray-600"></div>
+        </div>
+    </template>
+
+    <script>
+        function getRandomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        function generateLinearFunction() {
+            // Generate slope (non-zero)
+            let slope = getRandomInt(-5, 5);
+            while (slope === 0) {
+                slope = getRandomInt(-5, 5);
+            }
+
+            // Generate y-intercept
+            const yIntercept = getRandomInt(-10, 10);
+
+            // Format the function
+            let equation = 'y = ';
+            
+            // Add slope term
+            if (slope === 1) {
+                equation += 'x';
+            } else if (slope === -1) {
+                equation += '-x';
+            } else {
+                equation += `${slope}x`;
+            }
+
+            // Add y-intercept
+            if (yIntercept > 0) {
+                equation += ` + ${yIntercept}`;
+            } else if (yIntercept < 0) {
+                equation += ` - ${Math.abs(yIntercept)}`;
+            }
+
+            // Generate two points on the line
+            const x1 = getRandomInt(-5, 5);
+            const y1 = slope * x1 + yIntercept;
+            const x2 = x1 + 2;  // Ensure x2 > x1
+            const y2 = slope * x2 + yIntercept;
+
+            return {
+                equation: equation,
+                points: `Points on the line: (${x1}, ${y1}) and (${x2}, ${y2})`
+            };
+        }
+
+        function generateProblems() {
+            const problemsDiv = document.getElementById('problems');
+            const template = document.getElementById('problem-template');
+            problemsDiv.innerHTML = '';
+
+            for (let i = 1; i <= 9; i++) {
+                const clone = template.content.cloneNode(true);
+                const problem = generateLinearFunction();
+                
+                clone.querySelector('h3').textContent = `Problem ${i}`;
+                clone.querySelector('.expression').textContent = `\\[${problem.equation}\\]`;
+                clone.querySelector('.points').textContent = problem.points;
+                
+                problemsDiv.appendChild(clone);
+            }
+
+            MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+        }
+
+        // Initialize problems on page load
+        window.addEventListener('DOMContentLoaded', generateProblems);
+    </script>
+</body>
+</html>
