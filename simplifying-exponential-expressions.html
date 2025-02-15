@@ -118,25 +118,61 @@
     </div>
 
     <template id="problem-template">
-        <div class="problem rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-900/5 hover:bg-gray-50 transition-colors">
+        <div class="problem relative rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-900/5 hover:bg-gray-50 transition-colors">
             <h3 class="text-base font-semibold leading-7 text-gray-500">Problem #</h3>
             <p class="expression mt-3 text-lg"></p>
+            <button class="help-icon absolute bottom-2 right-2 text-indigo-200 hover:text-white font-bold text-lg w-6 h-6 flex items-center justify-center rounded-full bg-gray-100 hover:bg-indigo-500" onclick="openWolframAlpha(this.query)">
+                ?
+            </button>
         </div>
     </template>
 
     <script>
         const expressionTemplates = [
-            'x^{{a}} \\cdot x^{{b}}',
-            '(y^{{a}})^{{b}}',
-            '{{a}}x^{{b}} \\cdot {{c}}x^{{d}}',
-            '({{a}}x^{{b}})({{c}}x^{{d}})',
-            '\\frac{x^{{a}}}{x^{{b}}}',
-            '({{a}}x^{{b}} y)({{c}}x^{{d}} y^{{e}})',
-            '\\frac{x^{{a}}y^{{b}}}{{{c}}x^{{d}}}',
-            '({{a}}x^{{b}}y^{{c}})^{{d}}',
-            '\\left(\\frac{y^{{a}}}{x^{{b}}}\\right)^{{c}}',
-            '({{a}}x^{{b}}y)({{c}}x^{{d}}y^{{e}})',
-            '\\frac{{{a}}x^{{b}}y^{{c}}}{{{e}}y^{{d}}}',
+            {
+                latex: 'x^{{a}} \\cdot x^{{b}}',
+                wolframQuery: 'x^({{a}}) * x^({{b}})'
+            },
+            {
+                latex: '(y^{{a}})^{{b}}',
+                wolframQuery: '(y^({{a}}))^({{b}})'
+            },
+            {
+                latex: '{{a}}x^{{b}} \\cdot {{c}}x^{{d}}',
+                wolframQuery: '{{a}}x^({{b}}) * {{c}}x^({{d}})'
+            },
+            {
+                latex: '({{a}}x^{{b}})({{c}}x^{{d}})',
+                wolframQuery: '({{a}}x^({{b}}))*({{c}}x^({{d}}))'
+            },
+            {
+                latex: '\\frac{x^{{a}}}{x^{{b}}}',
+                wolframQuery: 'x^({{a}})/x^({{b}})'
+            },
+            {
+                latex: '({{a}}x^{{b}} y)({{c}}x^{{d}} y^{{e}})',
+                wolframQuery: '({{a}}x^({{b}})y)*({{c}}x^({{d}})y^({{e}}))'
+            },
+            {
+                latex: '\\frac{x^{{a}}y^{{b}}}{{{c}}x^{{d}}}',
+                wolframQuery: '(x^({{a}})y^({{b}}))/({{c}}x^({{d}}))'
+            },
+            {
+                latex: '({{a}}x^{{b}}y^{{c}})^{{d}}',
+                wolframQuery: '({{a}}x^({{b}})y^({{c}}))^({{d}})'
+            },
+            {
+                latex: '\\left(\\frac{y^{{a}}}{x^{{b}}}\\right)^{{c}}',
+                wolframQuery: '(y^({{a}})/x^({{b}}))^({{c}})'
+            },
+            {
+                latex: '({{a}}x^{{b}}y)({{c}}x^{{d}}y^{{e}})',
+                wolframQuery: '({{a}}x^({{b}})y)*({{c}}x^({{d}})y^({{e}}))'
+            },
+            {
+                latex: '\\frac{{{a}}x^{{b}}y^{{c}}}{{{e}}y^{{d}}}',
+                wolframQuery: '({{a}}x^({{b}})y^({{c}}))/{{e}}y^({{d}})'
+            }
         ];
 
         function getRandomInt(min, max) {
@@ -158,7 +194,10 @@
                 e: getRandomInt(-9, 9)
             };
 
-            return template.replace(/\{\{([abcde])\}\}/g, (m,p1) => `{${values[p1]}}`);
+            return { 
+                "latex": template.latex.replace(/\{\{([abcde])\}\}/g, (m,p1) => `{${values[p1]}}`),
+                "wolframQuery": template.wolframQuery.replace(/\{\{([abcde])\}\}/g, (m,p1) => `${values[p1]}`)
+            };
         }
 
         function generateProblems() {
@@ -169,14 +208,20 @@
             for (let i = 1; i <= 10; i++) {
                 const clone = template.content.cloneNode(true);
                 const expression = generateExpression();
-                
                 clone.querySelector('h3').textContent = `Problem ${i}`;
-                clone.querySelector('.expression').textContent = `\\[${expression}\\]`;
-                
+                const mathEl = clone.querySelector('.expression');
+                mathEl.textContent = `\\[${expression.latex}\\]`;
+                clone.querySelector('.help-icon').query = `Simplify ${expression.wolframQuery}`;
                 problemsDiv.appendChild(clone);
             }
 
             MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+        }
+
+        function openWolframAlpha(query) {
+            query = encodeURIComponent(query.replace(/\\\[|\\\]/g, ''));
+            const url = `https://www.wolframalpha.com/input/?i=${query}`;
+            window.open(url, '_blank');
         }
 
         // Initialize problems on page load
