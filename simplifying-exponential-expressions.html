@@ -118,9 +118,12 @@
     </div>
 
     <template id="problem-template">
-        <div class="problem rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-900/5 hover:bg-gray-50 transition-colors">
+        <div class="problem relative rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-900/5 hover:bg-gray-50 transition-colors">
             <h3 class="text-base font-semibold leading-7 text-gray-500">Problem #</h3>
             <p class="expression mt-3 text-lg"></p>
+            <button class="help-icon absolute bottom-2 right-2 text-indigo-200 hover:text-white font-bold text-lg w-6 h-6 flex items-center justify-center rounded-full bg-gray-100 hover:bg-indigo-500">
+                ?
+            </button>
         </div>
     </template>
 
@@ -172,11 +175,17 @@
                 
                 clone.querySelector('h3').textContent = `Problem ${i}`;
                 clone.querySelector('.expression').textContent = `\\[${expression}\\]`;
-                
+                clone.querySelector('.help-icon').onclick = () => openWolframAlpha(expression);
                 problemsDiv.appendChild(clone);
             }
 
             MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+        }
+
+        function openWolframAlpha(query) {
+            query = encodeURIComponent(expression.replace(/\\\[|\\\]/g, ''));
+            const url = `https://www.wolframalpha.com/input/?i=${query}`;
+            window.open(url, '_blank');
         }
 
         // Initialize problems on page load
