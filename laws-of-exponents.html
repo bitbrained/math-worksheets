@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laws of Exponents</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        @media print {
+            .decorative, button { display: none !important; }
+            body { background: white !important; color: black !important; }
+            .mx-auto { margin: 0 !important; max-width: none !important; }
+            h1 { font-size: 16px !important; margin-bottom: 1rem !important; padding: 0}
+            #problems { grid-template-columns: 1fr !important; gap: 1rem !important; }
+            .problem {
+                break-inside: avoid;
+                border: 1px solid #ccc !important;
+                box-shadow: none !important;
+                background: white !important;
+                padding: 1rem !important;
+                margin-bottom: 1rem !important;
+                display: grid !important;
+                grid-template-columns: minmax(200px, 1fr) minmax(400px, 2fr) !important;
+                gap: 1.5rem !important;
+            }
+
+            .problem-content {
+                border-right: 1px dashed #ccc !important;
+                padding-right: 1rem !important;
+            }
+
+            .work-space {
+                display: block !important;
+            }
+        }
+
+        .work-space {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-white">
+    <div class="relative isolate">
+        <!-- Background -->
+        <div class="decorative absolute inset-x-0 top-40 -z-10 transform-gpu overflow-hidden blur-3xl" aria-hidden="true">
+            <div class="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]"></div>
+        </div>
+
+        <!-- Header -->
+        <div class="px-6 pt-6 lg:px-8">
+            <nav class="flex items-center justify-between" aria-label="Global">
+                <div class="flex lg:flex-1">
+                    <a href="index.html" class="-m-1.5 p-1.5">
+                        <span class="text-2xl font-bold text-gray-900">Math Worksheets</span>
+                    </a>
+                </div>
+            </nav>
+        </div>
+
+        <main>
+            <!-- Title Section -->
+            <div class="relative px-6 lg:px-8">
+                <div class="mx-auto max-w-2xl py-16 sm:py-24 print:py-0">
+                    <div class="text-center">
+                        <h1 class="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl print:text-lg">
+                            Laws of Exponents
+                        </h1>
+                        <p class="decorative mt-6 text-lg leading-8 text-gray-600">
+                            Practice applying the laws of exponents: product rule, quotient rule, power rule, and negative exponents.
+                        </p>
+                        <div class="decorative mt-8">
+                            <button onclick="generateProblems()" 
+                                    class="rounded-md bg-indigo-600 px-6 py-3 text-base font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                Generate New Problems
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Problems Grid -->
+            <div class="mx-auto max-w-7xl px-6 lg:px-8 pb-24">
+                <div id="problems" class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"></div>
+            </div>
+        </main>
+    </div>
+
+    <template id="problem-template">
+        <div class="problem relative rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-900/5 hover:bg-gray-50 transition-colors">
+            <div class="problem-content">
+                <h3 class="text-base font-semibold leading-7 text-gray-500">Problem #</h3>
+                <p class="expression mt-3 text-lg"></p>
+            </div>
+            <div class="work-space"></div>
+            <button class="help-icon absolute bottom-2 right-2 text-indigo-200 hover:text-white font-bold text-lg w-6 h-6 flex items-center justify-center rounded-full bg-gray-100 hover:bg-indigo-500" onclick="openWolframAlpha(this.query)">?</button>
+        </div>
+    </template>
+
+    <script>
+        const exponentRules = [
+            {
+                name: "Product Rule",
+                templates: [
+                    { latex: 'x^{{{a}}} \\cdot x^{{{b}}}', rule: "When multiplying powers with the same base, add the exponents." },
+                    { latex: '({{c}}x^{{{a}}}) \\cdot ({{d}}x^{{{b}}})', rule: "Add the exponents and multiply the coefficients." }
+                ]
+            },
+            {
+                name: "Quotient Rule",
+                templates: [
+                    { latex: '\\frac{x^{{{a}}}}{x^{{{b}}}}', rule: "When dividing powers with the same base, subtract the exponents." },
+                    { latex: '\\frac{{{c}}x^{{{a}}}}{{{d}}x^{{{b}}}}', rule: "Subtract the exponents and divide the coefficients." }
+                ]
+            },
+            {
+                name: "Power Rule",
+                templates: [
+                    { latex: '(x^{{{a}}})^{{{b}}}', rule: "When raising a power to a power, multiply the exponents." },
+                    { latex: '({{c}}x^{{{a}}})^{{{b}}}', rule: "Multiply the exponents and raise the coefficient to the outer power." }
+                ]
+            },
+            {
+                name: "Negative Exponent Rule",
+                templates: [
+                    { latex: 'x^{-{{c}}}', rule: "Convert the negative exponent to a positive exponent by reciprocating the base." },
+                    { latex: '\\frac{1}{x^{-{{c}}}}', rule: "Convert to a positive exponent by moving the term to the opposite position." }
+                ]
+            }
+        ];
+
+        function getRandomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        function generateExpression() {
+            const ruleSet = exponentRules[Math.floor(Math.random() * exponentRules.length)];
+            const template = ruleSet.templates[Math.floor(Math.random() * ruleSet.templates.length)];
+            
+            const values = {
+                a: getRandomInt(-9, 9),
+                b: getRandomInt(-9, 9),
+                c: getRandomInt(1, 9),
+                d: getRandomInt(1, 9)
+            };
+
+            const latex = template.latex.replace(/\{\{([abcd])\}\}/g, (m, p1) => values[p1]);
+            
+            return {
+                latex,
+                rule: template.rule,
+                ruleName: ruleSet.name,
+                wolframQuery: `Simplify ${latex}`
+            };
+        }
+
+        function generateProblems() {
+            const problemsDiv = document.getElementById('problems');
+            const template = document.getElementById('problem-template');
+            problemsDiv.innerHTML = '';
+
+            for (let i = 1; i <= 9; i++) {
+                const clone = template.content.cloneNode(true);
+                const problem = generateExpression();
+                
+                clone.querySelector('h3').textContent = `Problem ${i}`;
+                clone.querySelector('.expression').textContent = `\\[${problem.latex}\\]`;
+                clone.querySelector('.help-icon').query = problem.wolframQuery;
+                
+                problemsDiv.appendChild(clone);
+            }
+
+            MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+        }
+
+        function openWolframAlpha(query) {
+            query = encodeURIComponent(query.replace(/\\\[|\\\]/g, ''));
+            window.open(`https://www.wolframalpha.com/input/?i=${query}`, '_blank');
+        }
+
+        window.addEventListener('DOMContentLoaded', generateProblems);
+    </script>
+</body>
+</html>
