@@ -129,17 +129,50 @@
 
     <script>
         const expressionTemplates = [
-            'x^{{a}} \\cdot x^{{b}}',
-            '(y^{{a}})^{{b}}',
-            '{{a}}x^{{b}} \\cdot {{c}}x^{{d}}',
-            '({{a}}x^{{b}})({{c}}x^{{d}})',
-            '\\frac{x^{{a}}}{x^{{b}}}',
-            '({{a}}x^{{b}} y)({{c}}x^{{d}} y^{{e}})',
-            '\\frac{x^{{a}}y^{{b}}}{{{c}}x^{{d}}}',
-            '({{a}}x^{{b}}y^{{c}})^{{d}}',
-            '\\left(\\frac{y^{{a}}}{x^{{b}}}\\right)^{{c}}',
-            '({{a}}x^{{b}}y)({{c}}x^{{d}}y^{{e}})',
-            '\\frac{{{a}}x^{{b}}y^{{c}}}{{{e}}y^{{d}}}',
+            {
+                latex: 'x^{{a}} \\cdot x^{{b}}',
+                wolframQuery: 'x^({{a}}) * x^({{b}})'
+            },
+            {
+                latex: '(y^{{a}})^{{b}}',
+                wolframQuery: '(y^({{a}}))^({{b}})'
+            },
+            {
+                latex: '{{a}}x^{{b}} \\cdot {{c}}x^{{d}}',
+                wolframQuery: '{{a}}x^({{b}}) * {{c}}x^({{d}})'
+            },
+            {
+                latex: '({{a}}x^{{b}})({{c}}x^{{d}})',
+                wolframQuery: '({{a}}x^({{b}}))*({{c}}x^({{d}}))'
+            },
+            {
+                latex: '\\frac{x^{{a}}}{x^{{b}}}',
+                wolframQuery: 'x^({{a}})/x^({{b}})'
+            },
+            {
+                latex: '({{a}}x^{{b}} y)({{c}}x^{{d}} y^{{e}})',
+                wolframQuery: '({{a}}x^({{b}})y)*({{c}}x^({{d}})y^({{e}}))'
+            },
+            {
+                latex: '\\frac{x^{{a}}y^{{b}}}{{{c}}x^{{d}}}',
+                wolframQuery: '(x^({{a}})y^({{b}}))/({{c}}x^({{d}}))'
+            },
+            {
+                latex: '({{a}}x^{{b}}y^{{c}})^{{d}}',
+                wolframQuery: '({{a}}x^({{b}})y^({{c}}))^({{d}})'
+            },
+            {
+                latex: '\\left(\\frac{y^{{a}}}{x^{{b}}}\\right)^{{c}}',
+                wolframQuery: '(y^({{a}})/x^({{b}}))^({{c}})'
+            },
+            {
+                latex: '({{a}}x^{{b}}y)({{c}}x^{{d}}y^{{e}})',
+                wolframQuery: '({{a}}x^({{b}})y)*({{c}}x^({{d}})y^({{e}}))'
+            },
+            {
+                latex: '\\frac{{{a}}x^{{b}}y^{{c}}}{{{e}}y^{{d}}}',
+                wolframQuery: '({{a}}x^({{b}})y^({{c}}))/{{e}}y^({{d}})'
+            }
         ];
 
         function getRandomInt(min, max) {
@@ -161,7 +194,10 @@
                 e: getRandomInt(-9, 9)
             };
 
-            return template.replace(/\{\{([abcde])\}\}/g, (m,p1) => `{${values[p1]}}`);
+            return { 
+                "latex": template.latex.replace(/\{\{([abcde])\}\}/g, (m,p1) => `{${values[p1]}}`),
+                "wolframQuery": template.wolframQuery.replace(/\{\{([abcde])\}\}/g, (m,p1) => `${values[p1]}`)
+            };
         }
 
         function generateProblems() {
@@ -174,8 +210,8 @@
                 const expression = generateExpression();
                 clone.querySelector('h3').textContent = `Problem ${i}`;
                 const mathEl = clone.querySelector('.expression');
-                mathEl.textContent = `\\[${expression}\\]`;
-                clone.querySelector('.help-icon').query = `Simplify ${expression}`;
+                mathEl.textContent = `\\[${expression.latex}\\]`;
+                clone.querySelector('.help-icon').query = `Simplify ${expression.wolframQuery}`;
                 problemsDiv.appendChild(clone);
             }
 
