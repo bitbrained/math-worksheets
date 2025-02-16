@@ -60,11 +60,24 @@
                         <p class="mt-6 text-lg leading-8 text-gray-600 print:hidden">
                             Practice graphing linear functions by either plotting points from an equation or finding the equation from two points.
                         </p>
-                        <div class="mt-8 print:hidden">
-                            <button onclick="generateProblems()" 
-                                    class="rounded-md bg-indigo-600 px-6 py-3 text-base font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                                Generate New Problems
-                            </button>
+                        <div class="mt-8 print:hidden flex items-center justify-center">
+                            <div class="group inline-flex rounded-md shadow-sm">
+                                <div class="flex items-center rounded-l-md border border-r-0 border-gray-300 bg-white px-3">
+                                    <input type="number" 
+                                           id="problemCount" 
+                                           value="9" 
+                                           min="1" 
+                                           max="30"
+                                           class="w-16 border-0 bg-transparent py-3 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm"
+                                           onchange="this.value = Math.min(30, Math.max(1, this.value))"
+                                    >
+                                    <span class="text-gray-500 sm:text-sm">problems</span>
+                                </div>
+                                <button onclick="generateProblems()" 
+                                        class="relative -ml-px inline-flex items-center rounded-r-md bg-indigo-600 px-6 py-3 text-base font-semibold text-white hover:bg-indigo-500 focus:z-10">
+                                    Generate New Problems
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -218,9 +231,19 @@
         function generateProblems() {
             const problemsDiv = document.getElementById('problems');
             const template = document.getElementById('problem-template');
+            const count = parseInt(document.getElementById('problemCount').value);
+            const problemCount = Math.min(30, Math.max(1, count || 9)); // Fallback to 9 if invalid
+            document.getElementById('problemCount').value = problemCount; // Update input with validated value
             problemsDiv.innerHTML = '';
 
-            for (let i = 1; i <= 9; i++) {
+            // Adjust grid columns based on problem count
+            if (problemCount <= 8) {
+                problemsDiv.className = 'grid gap-6 sm:grid-cols-2 lg:grid-cols-2 print:grid-cols-1 print:max-w-3xl print:mx-auto print:gap-4';
+            } else {
+                problemsDiv.className = 'grid gap-6 sm:grid-cols-2 lg:grid-cols-3 print:grid-cols-1 print:max-w-3xl print:mx-auto print:gap-4';
+            }
+
+            for (let i = 1; i <= problemCount; i++) {
                 const clone = template.content.cloneNode(true);
                 const problem = generateLinearFunction();
                 
